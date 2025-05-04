@@ -34,3 +34,5 @@ def get_date(date: str) -> str:
 if __name__ == '__main__':
     print(mask_account_card(input("Введите данные счёта или карты: ")))
     print(get_date(input("Введите дату: ")))
+    print("Поздравляем, всё успешно!")
+
