@@ -29,11 +29,6 @@ def test_get_mask_card_number_too_much():
         get_mask_card_number("3487547998372382782748398237")
 
 
-
-# def get_mask_account(account_number: str) -> str:
-#     """Функция принимает на вход номер счета и возвращает его маску"""
-#     return f"** {str(account_number)[-4:]}"
-
 def test_get_mask_account():
     """Проверка правильности маскировки номера карты"""
     assert get_mask_account("73654108430135874305") == "** 4305"
@@ -46,7 +41,7 @@ def test_get_mask_account_with_spases():
 
 def test_get_mask_account_long_number():
     """Проверка правильности маскировки при введении номера счёта в международном формате"""
-    assert get_mask_account("GB29 NWBK 6016 1331 9268 19") == "** 6819"
+    assert get_mask_account("RU12345678901234567890") == "** 7890"
 
 
 def test_get_mask_account_empty():
@@ -58,5 +53,5 @@ def test_get_mask_account_empty():
 def test_get_mask_account_too_much():
     """Проверка отработки ошибки при введении лишком длинного номера (более 20 символов)"""
     with pytest.raises(TypeError):
-        get_mask_account("3487547998355678972382782748398237")
+        get_mask_account("3487547998355678972382782748878398237")
 

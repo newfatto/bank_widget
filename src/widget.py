@@ -1,5 +1,3 @@
-# from . import masks
-
 from src.masks import get_mask_account, get_mask_card_number
 
 
@@ -14,16 +12,23 @@ def mask_account_card(info: str) -> str:
         "Visa Gold": "Visa Gold",
     }
 
+    account_type = 0
+
     for key in types:
         if key in info:
-            type = types[key]
+            account_type = types[key]
 
-    if info[-20:].isdigit():
-        return f"{type} {get_mask_account(info[-20:])}"
-    elif info[-16:].isdigit():
-        return f"{type} {get_mask_card_number(info[-16:])}"
+    if account_type is None:
+        raise ValueError("Не удалось определить тип счёта")
+
+    ready_info = "".join(i for i in info if i.isdigit())
+
+    if account_type == "Счет":
+        return f"{account_type} {get_mask_account(ready_info)[-4::]}"
+    elif ready_info[-13:].isdigit():
+        return f"{account_type} {get_mask_card_number(ready_info)}"
     else:
-        return "Вы ввели некорректные данные"
+        raise TypeError ("Вы ввели некорректные данные")
 
 
 def get_date(date: str) -> str:
@@ -32,6 +37,7 @@ def get_date(date: str) -> str:
 
 
 if __name__ == "__main__":
+    print(mask_account_card("Счет 764"))
     print(mask_account_card(input("Введите данные счёта или карты: ")))
     print(get_date(input("Введите дату: ")))
     print("Поздравляем, всё успешно!")
