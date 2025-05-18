@@ -24,6 +24,7 @@ mypy = "^1.15.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.5"
+pytest-cov = "^6.1.1"
 
 [tool.black]
 line-length = 119
@@ -52,3 +53,6 @@ exclude = 'venv'
 
 [tool.poetry.dependencies]
 pytest = "^8.3.5"
+
+[tool.pytest.ini_options]
+addopts = "--cov=bank_widget"
