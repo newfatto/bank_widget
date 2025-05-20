@@ -1,12 +1,16 @@
-# Номер карты 7000792289606361
-# Номер счёта 73654108430135874305
-
-
 def get_mask_card_number(card_number: str) -> str:
     """Функция принимает на вход номер карты и возвращает ее маску"""
-    return f"{str(card_number)[0:4]} {str(card_number)[4:6]}** **** {str(card_number)[12:]}"
+    ready_card_number = "".join(i for i in card_number if i.isdigit())
+    if len(ready_card_number) < 13 or len(ready_card_number) > 20:
+        raise TypeError("Вы ввели некорректный номер карты")
+    else:
+        return f"{str(ready_card_number)[0:4]} {str(ready_card_number)[4:6]}** **** {str(ready_card_number)[-4:]}"
 
 
 def get_mask_account(account_number: str) -> str:
     """Функция принимает на вход номер счета и возвращает его маску"""
-    return f"** {str(account_number)[-4:]}"
+    ready_account_number = "".join(i for i in account_number if i.isdigit())
+    if len(ready_account_number) < 20 or len(ready_account_number) > 35:
+        raise TypeError("Вы ввели некорректный номер счёта")
+    else:
+        return f"** {str(ready_account_number)[-4:]}"
