@@ -1,12 +1,13 @@
 import locale
 from datetime import datetime
+from typing import Optional
 
 from src.masks import get_mask_account, get_mask_card_number
 
 locale.setlocale(locale.LC_ALL, "ru_RU")
 
 
-def mask_account_card(info: str) -> str:
+def mask_account_card(info: str) -> Optional[str]:
     """Функция, принимающая информацию о счетах и картах и возвращающая их маску"""
     types = {
         "Maestro": "Maestro",
@@ -17,7 +18,7 @@ def mask_account_card(info: str) -> str:
         "Visa Gold": "Visa Gold",
     }
 
-    account_type = ""
+    account_type = None
 
     for key in types:
         if key in info:
@@ -30,10 +31,8 @@ def mask_account_card(info: str) -> str:
 
     if account_type == "Счет":
         return f"{account_type} {get_mask_account(ready_info)[-4::]}"
-    elif ready_info[-13:].isdigit():
-        return f"{account_type} {get_mask_card_number(ready_info)}"
     else:
-        raise TypeError("Вы ввели некорректные данные")
+        return f"{account_type} {get_mask_card_number(ready_info)}"
 
 
 def get_date(date_string: str) -> str:
