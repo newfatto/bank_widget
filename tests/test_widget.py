@@ -32,14 +32,20 @@ def test_mask_account_card_incorrect_account() -> None:
 
 def test_mask_account_card_empty() -> None:
     """Проверка отработки ошибки при введении пустой строки"""
-    with pytest.raises(TypeError):
+    with pytest.raises(ValueError):
         mask_account_card("")
 
 
 def test_mask_account_card_too_much() -> None:
     """Проверка отработки ошибки при введении лишком длинного номера (более 20 символов)"""
     with pytest.raises(TypeError):
-        mask_account_card("3487547998355678972382782748878398237")
+        mask_account_card("Счет 3487547998355678972382782748878398237")
+
+
+def test_mask_account_card_no_account_type() -> None:
+    """Проверка отработки ошибки при введении номера без указания типа счёта"""
+    with pytest.raises(ValueError):
+        mask_account_card("348754799835567897")
 
 
 # Тестирование функции get_date()
