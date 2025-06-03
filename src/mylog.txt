@@ -1,1 +1,2 @@
 my_function ok
+my_function Error: <class 'TypeError'> Inputs: (([1, 3, 6], 'десять'), {})
