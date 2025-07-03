@@ -1,4 +1,5 @@
 import pytest
+from typing import Iterator, Any
 
 from src.generators import card_number_generator, filter_by_currency, transaction_descriptions
 
@@ -103,7 +104,6 @@ def test_card_number_generator() -> None:
     "start, stop, expected",
     [(1, 1, "0000 0000 0000 0001"), (9999999999999999, 9999999999999999, "9999 9999 9999 9999")],
 )
-
 def test_card_number_generator_same(start: int, stop: int, expected: Iterator[Any]) -> None:
     """Тестирование возникновения ошибки при передаче одинакового значения stop и start (максимальные и минимальные)"""
     assert next(card_number_generator(start, stop)) == expected
