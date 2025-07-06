@@ -1,0 +1,12 @@
+my_function ok
+my_function ok
+my_function ok
+my_function Error: <class 'TypeError'> Inputs: ((1, 'два'), {})
+my_function ok
+my_function ok
+my_function ok
+my_function Error: <class 'TypeError'> Inputs: ((1, 'два'), {})
+my_function ok
+my_function ok
+my_function ok
+my_function Error: <class 'TypeError'> Inputs: ((1, 'два'), {})
