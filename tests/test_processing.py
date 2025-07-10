@@ -1,8 +1,8 @@
-from typing import Dict, List
+from typing import Any, Dict, List
 
 import pytest
 
-from src.processing import filter_by_state, sort_by_date
+from src.processing import filter_by_state, filter_transactions_by_description, process_bank_operations, sort_by_date
 
 # Тестирование функции filter_by_state()
 
@@ -128,3 +128,149 @@ def test_sort_by_date_incorrect_date() -> None:
                 {"id": 41428829, "state": "EXECUTED"},
             ]
         )
+
+
+# Тестирование функции filter_transactions_by_description
+
+
+def test_filter_transactions_empty_list() -> None:
+    """Тест для пустого списка транзакций."""
+    assert filter_transactions_by_description([], "test") == []
+
+
+def test_filter_transactions_no_match() -> None:
+    """Тест, когда ни одна транзакция не соответствует критерию поиска."""
+    transactions = [
+        {"id": 1, "description": "Transaction A"},
+        {"id": 2, "description": "Transaction B"},
+    ]
+    assert filter_transactions_by_description(transactions, "nonexistent") == []
+
+
+def test_filter_transactions_single_match() -> None:
+    """Тест, когда только одна транзакция соответствует критерию поиска."""
+    transactions = [
+        {"id": 1, "description": "Transaction A"},
+        {"id": 2, "description": "Matching Transaction"},
+        {"id": 3, "description": "Transaction C"},
+    ]
+    expected = [{"id": 2, "description": "Matching Transaction"}]
+    assert filter_transactions_by_description(transactions, "Matching") == expected
+
+
+def test_filter_transactions_multiple_matches() -> None:
+    """Тест, когда несколько транзакций соответствуют критерию поиска."""
+    transactions = [
+        {"id": 1, "description": "Matching Transaction 1"},
+        {"id": 2, "description": "Matching Transaction 2"},
+        {"id": 3, "description": "Transaction C"},
+    ]
+    expected = [
+        {"id": 1, "description": "Matching Transaction 1"},
+        {"id": 2, "description": "Matching Transaction 2"},
+    ]
+    assert filter_transactions_by_description(transactions, "Matching") == expected
+
+
+# Тестирование функции process_bank_operations
+
+
+def test_process_bank_operations_basic() -> None:
+    """
+    Базовый тест с несколькими категориями и транзакциями
+    """
+    transactions = [
+        {"description": "Продукты", "amount": 1000},
+        {"description": "Транспорт", "amount": 500},
+        {"description": "Продукты", "amount": 800},
+        {"description": "Развлечения", "amount": 2000},
+    ]
+    categories = ["Продукты", "Транспорт", "Развлечения"]
+
+    expected = {"Продукты": 2, "Транспорт": 1, "Развлечения": 1}
+
+    result = process_bank_operations(transactions, categories)
+    assert result == expected
+
+
+def test_process_bank_operations_empty_transactions() -> None:
+    """
+    Тест с пустым списком транзакций
+    """
+    transactions: List[Dict[str, Any]] = []
+    categories = ["Продукты", "Транспорт"]
+
+    expected: Dict[str, int] = {}
+
+    result = process_bank_operations(transactions, categories)
+    assert result == expected
+
+
+def test_process_bank_operations_no_matching_transactions() -> None:
+    """
+    Тест когда нет совпадений с категориями
+    """
+    transactions = [{"description": "Продукты", "amount": 1000}, {"description": "Транспорт", "amount": 500}]
+    categories = ["Развлечения", "Медицина"]
+
+    expected: Dict[str, int] = {}
+
+    result = process_bank_operations(transactions, categories)
+    assert result == expected
+
+
+def test_process_bank_operations_single_category() -> None:
+    """
+    Тест с одной категорией
+    """
+    transactions = [
+        {"description": "Продукты", "amount": 1000},
+        {"description": "Продукты", "amount": 800},
+        {"description": "Продукты", "amount": 500},
+    ]
+    categories = ["Продукты"]
+
+    expected = {"Продукты": 3}
+
+    result = process_bank_operations(transactions, categories)
+    assert result == expected
+
+
+def test_process_bank_operations_invalid_transactions_type() -> None:
+    """
+    Тест с некорректным типом transactions
+    """
+    try:
+        process_bank_operations("не список", ["Продукты"])
+    except TypeError as e:
+        assert str(e) == "transactions должен быть списком."
+
+
+def test_process_bank_operations_invalid_categories_type() -> None:
+    """
+    Тест с некорректным типом categories
+    """
+    try:
+        process_bank_operations([{"description": "Продукты"}], "не список")
+    except TypeError as e:
+        assert str(e) == "categories должен быть списком."
+
+
+def test_process_bank_operations_mixed_categories() -> None:
+    """
+    Тест с разными категориями и разными количествами
+    """
+    transactions = [
+        {"description": "Продукты", "amount": 1000},
+        {"description": "Транспорт", "amount": 500},
+        {"description": "Продукты", "amount": 800},
+        {"description": "Развлечения", "amount": 2000},
+        {"description": "Транспорт", "amount": 300},
+        {"description": "Транспорт", "amount": 400},
+    ]
+    categories = ["Продукты", "Транспорт", "Развлечения"]
+
+    expected = {"Продукты": 2, "Транспорт": 3, "Развлечения": 1}
+
+    result = process_bank_operations(transactions, categories)
+    assert result == expected

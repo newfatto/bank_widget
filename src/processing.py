@@ -33,9 +33,10 @@ def filter_transactions_by_description(transactions: list[dict], search_string: 
     """
     filtered_transactions = []
     try:
+        pattern = re.compile(search_string, re.IGNORECASE)
         for transaction in transactions:
             if isinstance(transaction.get("description"), str):
-                if re.search(search_string, transaction["description"]):
+                if pattern.search(transaction["description"]):
                     filtered_transactions.append(transaction)
     except KeyError as e:
         print(f"Ошибка: KeyError: {e}.")
