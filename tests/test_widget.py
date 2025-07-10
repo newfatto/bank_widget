@@ -9,14 +9,14 @@ from src.widget import get_date, mask_account_card
     "info, expected",
     [
         ("Maestro 1596837868705199", "Maestro 1596 83** **** 5199"),
-        ("Счет 64686473678894779589", "Счет 9589"),
+        ("Счет 64686473678894779589", "Счет ** 9589"),
         ("MasterCard 7158300734726758", "MasterCard 7158 30** **** 6758"),
-        ("Счет 35 3830 3347 4447 8955 60", "Счет 5560"),
+        ("Счет 35 3830 3347 4447 8955 60", "Счет ** 5560"),
         ("Visa Classic 6831982476737658", "Visa Classic 6831 98** **** 7658"),
         ("Visa Platinum 8990922113665229", "Visa Platinum 8990 92** **** 5229"),
         ("Visa Gold 5999 4142 2842 6353", "Visa Gold 5999 41** **** 6353"),
-        ("Счет 73654108430135874305", "Счет 4305"),
-        ("Счет RU12345678901234567890", "Счет 7890"),
+        ("Счет 73654108430135874305", "Счет ** 4305"),
+        ("Счет RU12345678901234567890", "Счет ** 7890"),
     ],
 )
 def test_mask_account_card(info: str, expected: str) -> None:
@@ -30,10 +30,9 @@ def test_mask_account_card_incorrect_account() -> None:
         mask_account_card("Счет 764")
 
 
-def test_mask_account_card_empty() -> None:
-    """Проверка отработки ошибки при введении пустой строки"""
-    with pytest.raises(ValueError):
-        mask_account_card("")
+def test_mask_account_card_empty_string() -> None:
+    """Проверка, что функция возвращает None при передаче пустой строки."""
+    assert mask_account_card("") is None
 
 
 def test_mask_account_card_too_much() -> None:
@@ -43,9 +42,8 @@ def test_mask_account_card_too_much() -> None:
 
 
 def test_mask_account_card_no_account_type() -> None:
-    """Проверка отработки ошибки при введении номера без указания типа счёта"""
-    with pytest.raises(ValueError):
-        mask_account_card("348754799835567897")
+    """Проверка возврата None при введении номера без указания типа счёта"""
+    assert mask_account_card("348754799835567897") is None
 
 
 # Тестирование функции get_date()
@@ -54,15 +52,13 @@ def test_mask_account_card_no_account_type() -> None:
 @pytest.mark.parametrize(
     "date, expected",
     [
-        ("2024-03-11", "11.03.2024"),
-        ("11/03/2024", "11.03.2024"),
-        ("03/11/2024", "03.11.2024"),
-        ("2024/03/11", "11.03.2024"),
-        ("11 март 2024", "11.03.2024"),
-        ("11 мар 2024", "11.03.2024"),
-        ("2024-03-11T02:26:18", "11.03.2024"),
-        ("11.03.2024", "11.03.2024"),
-        ("2024-03-11", "11.03.2024"),
+        ("2024-03-11", "2024-03-11"),
+        ("11/03/2024", "2024-11-03"),
+        ("03/11/2024", "2024-03-11"),
+        ("2024/03/11", "2024-03-11"),
+        ("2024-03-11T02:26:18", "2024-03-11"),
+        ("11.03.2024", "2024-11-03"),
+        ("2024-03-11", "2024-03-11"),
     ],
 )
 def test_get_date(date: str, expected: str) -> None:

@@ -1,16 +1,14 @@
-from typing import Any, Iterator, List
+from typing import Any, Dict, Generator, Iterator, List
 
 
-def filter_by_currency(transactions_list: List[dict], currency: str) -> Iterator[Any]:
+def filter_by_currency(transactions_list: list[dict[Any, Any]], currency: str) -> Iterator[Any]:
     """Функция принимает на вход список словарей, представляющих транзакции и возвращает итератор, который поочередно
     выдает транзакции, где валюта операции соответствует заданной (например, USD)."""
     if not transactions_list:
         raise ValueError("Список транзакций пуст")
 
     try:
-        filtered_transactions = filter(
-            lambda x: x["operationAmount"]["currency"]["name"] == currency, transactions_list
-        )
+        filtered_transactions = filter(lambda x: x["currency_code"] == currency, transactions_list)
         for transaction in filtered_transactions:
             yield transaction
 
@@ -18,10 +16,10 @@ def filter_by_currency(transactions_list: List[dict], currency: str) -> Iterator
         raise ValueError("Некорректный формат данных транзакций")
 
 
-def transaction_descriptions(transactions_list: List[dict]) -> Iterator[Any]:
+def transaction_descriptions(transactions_list: List[Dict[Any, Any]]) -> Generator[str, None, None]:
     """Функция принимает список словарей с транзакциями и возвращает описание каждой операции по очереди"""
     if not transactions_list:
-        raise ValueError("Список транзакций пуст")
+        return
 
     for transaction in transactions_list:
         yield transaction["description"]

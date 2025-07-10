@@ -4,8 +4,6 @@ import os
 import requests
 from dotenv import load_dotenv
 
-from src.utils import transaction_load
-
 load_dotenv()
 API_KEY = os.getenv("API_KEY")
 API_URL = "https://api.apilayer.com/exchangerates_data/convert"
@@ -54,10 +52,3 @@ def convert_transaction_to_rubles(transaction: dict) -> float | None:
     except (KeyError, ValueError) as e:
         print(f"Ошибка: Неверный формат транзакции: {e}")
         return None
-
-
-if __name__ == "__main__":
-    trans = transaction_load(
-        "C:/Users/ekaterina/YandexDisk/Education/Skypro/PycharmProjects/bank_widget/data/operations.json"
-    )[3]
-    print(convert_transaction_to_rubles(trans))

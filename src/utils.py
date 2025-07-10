@@ -29,11 +29,3 @@ def transaction_load(file_path: Any) -> list:
     except (FileNotFoundError, json.JSONDecodeError) as e:
         logger.warning(f"Возникла ошибка {e}")
         return []
-
-
-if __name__ == "__main__":
-    print(
-        transaction_load(
-            "C:/Users/ekaterina/YandexDisk/Education/Skypro/PycharmProjects/bank_widget/data/operations.json"
-        )
-    )
