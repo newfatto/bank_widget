@@ -17,7 +17,13 @@ def csv_to_transaction_list(csv_file: str) -> List[Dict]:
     if not os.path.exists(csv_file):
         raise FileNotFoundError(f"Файл CSV не найден: {csv_file}")
 
-    df = pd.read_csv(csv_file)
+    df = pd.read_csv(csv_file, sep=";")
+    for col in df.columns:
+        try:
+            df[col] = pd.to_numeric(df[col], errors="raise")
+        except ValueError:
+            pass
+    df = df.astype(str)
     transaction_list: List[Dict] = df.to_dict(orient="records")
     return transaction_list
 
